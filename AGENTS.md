@@ -21,6 +21,7 @@ Custom campaign-agenda kiosk. A **Next.js (App Router)** app that reads a **publ
 - **`index.html`** — legacy redirector served by **GitHub Pages** at `ronanrodrigo.dev/agenda-assis`. It only redirects to the live Vercel site (`https://agenda-assis.vercel.app`). Do not put app logic here.
 - **`kiosk.sh`** — Linux fullscreen launcher. **Not runnable on macOS** (uses `xset`, `unclutter`, `xdotool`, `chromium-browser`). Only relevant to the physical kiosk box.
 - **`.freebuff/`** — gitignored tool state. Never commit it.
+- **`.hermes/plans/`** — implementation plans. **`.hermes/plans/STATUS.md`** tracks each plan's status (✅ done / 🟡 partial / ⬜ pending / ❌ obsoleto) with commit/PR/deploy evidence. **Check it before starting or claiming any planned work** — it is the source of truth for what's already built vs. pending.
 
 ## Architecture (skillfold)
 

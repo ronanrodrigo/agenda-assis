@@ -31,5 +31,5 @@ Servir o app real no GitHub Pages como estático puro (sem Vercel, fetch client-
 ---
 
 ### Última atualização
-2026-08-27 — após edições de UI (header do card, cor do dia da semana, estrela) e reescrita do `AGENTS.md`.
+2026-08-27 — após mencionar STATUS.md no AGENTS.md.
 Próximo plano em aberto: **analytics/observabilidade Vercel** (pending).
