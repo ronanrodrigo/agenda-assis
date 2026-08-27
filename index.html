@@ -18,13 +18,16 @@
       padding: 0;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       background-color: #f1f3f4;
+      display: flex;
+      flex-direction: column;
     }
 
     .calendar-container {
       display: flex;
       flex-direction: column;
-      height: 100vh;
+      flex: 1;
       width: 100vw;
+      overflow: hidden;
     }
 
     .calendar-columns {
@@ -129,6 +132,10 @@
   <meta http-equiv="refresh" content="300">
 </head>
 <body>
+  <div class="qr-hero">
+    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://ronanrodrigo.dev/agenda-assis" alt="QR Code - Abrir agenda no celular">
+    <span>Acompanhe aqui a agenda da campanha!</span>
+  </div>
   <div class="calendar-container">
     <div class="calendar-columns">
       <div class="calendar-iframe-wrapper calendar-current">
@@ -182,10 +189,6 @@
       document.getElementById('nextMonthFrame').src = url;
     })();
   </script>
-  <div class="qr-hero">
-    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://ronanrodrigo.dev/agenda-assis" alt="QR Code - Abrir agenda no celular">
-    <span>Acompanhe aqui a agenda da campanha!</span>
-  </div>
   <a class="open-calendar-btn" href="https://calendar.google.com/calendar/u/0/r/agenda/assis.capim@gmail.com" target="_self">
     📅 Abrir no Google Agenda
   </a>
