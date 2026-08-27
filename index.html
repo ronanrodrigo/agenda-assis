@@ -51,6 +51,35 @@
       width: 100%;
       height: 100%;
       border: none;
+      transform: scale(1.2);
+      transform-origin: top left;
+    }
+
+    .qr-code-overlay {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: white;
+      border-radius: 12px;
+      padding: 8px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .qr-code-overlay img {
+      width: 100px;
+      height: 100px;
+      display: block;
+    }
+
+    .qr-code-overlay span {
+      font-size: 10px;
+      color: #555;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     }
 
 
@@ -108,5 +137,9 @@
       document.getElementById('nextMonthFrame').src = url;
     })();
   </script>
+  <div class="qr-code-overlay">
+    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://calendar.google.com/calendar/u/0/embed?src=assis.capim%40gmail.com" alt="QR Code - Abrir agenda no celular">
+    <span>Abra no celular</span>
+  </div>
 </body>
 </html>
