@@ -174,8 +174,7 @@
   <div class="calendar-container">
     <div class="calendar-columns">
       <div class="calendar-iframe-wrapper calendar-current">
-        <iframe
-          src="https://calendar.google.com/calendar/embed?src=assis.capim%40gmail.com&ctz=America%2FSao_Paulo&showTitle=0&showNav=0&showPrint=0&showTabs=0&showCalendars=0&mode=AGENDA&hl=pt_BR&showDate=0&bgcolor=%23ffffff&color=%23c62828"
+        <iframe id="currentMonthFrame"
           scrolling="no"
         ></iframe>
       </div>
@@ -192,7 +191,26 @@
       var year = now.getFullYear();
       var month = now.getMonth();
 
-      // Primeiro dia do próximo mês
+      function fmt(d) {
+        return d.getFullYear().toString() +
+          String(d.getMonth() + 1).padStart(2, '0') +
+          String(d.getDate()).padStart(2, '0');
+      }
+
+      var baseUrl = 'https://calendar.google.com/calendar/embed' +
+        '?src=assis.capim%40gmail.com' +
+        '&ctz=America%2FSao_Paulo' +
+        '&showTitle=0&showNav=0&showPrint=0&showTabs=0&showCalendars=0' +
+        '&mode=AGENDA' +
+        '&hl=pt_BR' +
+        '&showDate=0&bgcolor=%23ffffff&color=%23c62828';
+
+      // Mês corrente
+      var currentStart = new Date(year, month, 1);
+      var currentEnd = new Date(year, month + 1, 0);
+      document.getElementById('currentMonthFrame').src = baseUrl + '&dates=' + fmt(currentStart) + '/' + fmt(currentEnd);
+
+      // Próximo mês
       var nextMonth = month + 1;
       var nextYear = year;
       if (nextMonth > 11) {
@@ -200,28 +218,9 @@
         nextYear++;
       }
       var startDate = new Date(nextYear, nextMonth, 1);
-
-      // Último dia do próximo mês
       var endDate = new Date(nextYear, nextMonth + 1, 0);
 
-      function fmt(d) {
-        return d.getFullYear().toString() +
-          String(d.getMonth() + 1).padStart(2, '0') +
-          String(d.getDate()).padStart(2, '0');
-      }
-
-      var datesParam = fmt(startDate) + '/' + fmt(endDate);
-
-      var url = 'https://calendar.google.com/calendar/embed' +
-        '?src=assis.capim%40gmail.com' +
-        '&ctz=America%2FSao_Paulo' +
-        '&showTitle=0&showNav=0&showPrint=0&showTabs=0&showCalendars=0' +
-        '&mode=AGENDA' +
-        '&hl=pt_BR' +
-        '&showDate=0&bgcolor=%23ffffff&color=%23c62828' +
-        '&dates=' + datesParam;
-
-      document.getElementById('nextMonthFrame').src = url;
+      document.getElementById('nextMonthFrame').src = baseUrl + '&dates=' + fmt(startDate) + '/' + fmt(endDate);
     })();
   </script>
   <a class="open-calendar-btn" href="https://calendar.google.com/calendar/u/0/r/agenda/assis.capim@gmail.com" target="_self">
