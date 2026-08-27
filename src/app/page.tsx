@@ -13,6 +13,7 @@ interface AgendaResponse {
 const MONTHS_FULL = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 const MONTHS_IDX: Record<string, number> = { jan:0,fev:1,mar:2,abr:3,mai:4,jun:5,jul:6,ago:7,set:8,out:9,nov:10,dez:11 };
 const WEEK = ['dom','seg','ter','qua','qui','sex','sáb'];
+const WEEK_FULL = ['Domingo','Segunda Feira','Terça Feira','Quarta Feira','Quinta Feira','Sexta Feira','Sábado'];
 const PERIODS = ['Manhã','Tarde','Noite'] as const;
 type Period = typeof PERIODS[number];
 
@@ -43,14 +44,14 @@ function byDay(list: MonthEvent[]) {
 
 function renderDayCard(g: { day: number; items: MonthEvent[] }, year: number) {
   const d = new Date(year, MONTHS_IDX[g.items[0].mon], g.day);
-  const weekday = WEEK[d.getDay()];
-  const monthNum = MONTHS_IDX[g.items[0].mon] + 1;
+  const monthName = MONTHS_FULL[d.getMonth()];
+  const weekdayFull = WEEK_FULL[d.getDay()];
   return (
     <section className="day-group" key={g.day}>
       <div className="day-card">
         <div className="day-head">
-          <span className="dnum">Dia {g.day}</span>
-          <span className="dweek">{weekday} {g.day}/{monthNum}</span>
+          <span className="dnum">{g.day}/{monthName}</span>
+          <span className="dweek">- {weekdayFull}</span>
         </div>
         <ul className="day-list">
           {g.items.map((e) => (

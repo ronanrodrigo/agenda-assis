@@ -126,7 +126,9 @@
 
   <script>
     const WEEK=['dom','seg','ter','qua','qui','sex','sáb'];
+    const WEEK_FULL=['Domingo','Segunda Feira','Terça Feira','Quarta Feira','Quinta Feira','Sexta Feira','Sábado'];
     const MONTHS=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+    const MONTHS_FULL=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
     const hoje = new Date();
     const diaAtual = hoje.getDate();
     const mesAtual = MONTHS[hoje.getMonth()];
@@ -180,8 +182,10 @@
     function renderMonth(elId,list,year){
       document.getElementById(elId).innerHTML=byDay(list).map(g=>{
         const date=new Date(year, MONTHS.indexOf(g.items[0].mon), g.day);
+        const monthName=MONTHS_FULL[date.getMonth()];
+        const weekdayFull=WEEK_FULL[date.getDay()];
         const evs=g.items.map(e=>`<li><span class="time">${esc(e.time)}</span><span class="ev-body"><span class="ev-title">${esc(e.title)}</span>${e.loc?`<div class="ev-loc">${esc(e.loc)}</div>`:''}</span></li>`).join('');
-        return `<section class="day-group"><div class="day-card"><div class="day-head"><span class="dnum">Dia ${g.day}</span><span class="dweek">${WEEK[date.getDay()]} ${g.day}/${date.getMonth()+1}</span></div><ul class="day-list">${evs}</ul></div></section>`;
+        return `<section class="day-group"><div class="day-card"><div class="day-head"><span class="dnum">${g.day}/${monthName}</span><span class="dweek">- ${weekdayFull}</span></div><ul class="day-list">${evs}</ul></div></section>`;
       }).join('');
     }
     // Filtro dinâmico: apenas eventos do dia seguinte em diante
