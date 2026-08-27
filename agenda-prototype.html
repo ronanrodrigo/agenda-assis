@@ -185,7 +185,7 @@
         const monthName=MONTHS_FULL[date.getMonth()];
         const weekdayFull=WEEK_FULL[date.getDay()];
         const evs=g.items.map(e=>`<li><span class="time">${esc(e.time)}</span><span class="ev-body"><span class="ev-title">${esc(e.title)}</span>${e.loc?`<div class="ev-loc">${esc(e.loc)}</div>`:''}</span></li>`).join('');
-        return `<section class="day-group"><div class="day-card"><div class="day-head"><span class="dnum">${g.day}/${monthName}</span><span class="dweek">- ${weekdayFull}</span></div><ul class="day-list">${evs}</ul></div></section>`;
+        return `<section class="day-group"><div class="day-card"><div class="day-head"><span class="dnum">${g.day}/${monthName}</span><span class="dweek">${weekdayFull}</span></div><ul class="day-list">${evs}</ul></div></section>`;
       }).join('');
     }
     // Filtro dinâmico: apenas eventos do dia seguinte em diante

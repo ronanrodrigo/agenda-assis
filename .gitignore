@@ -1,1 +1,25 @@
 .freebuff
+
+# dependencies
+node_modules/
+
+# next.js build
+.next/
+out/
+
+# vercel
+.vercel/
+
+# env / secrets (NUNCA commitar a API key real)
+.env.local
+.env*.local
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# logs
+npm-debug.log*
+
+# os
+.DS_Store
