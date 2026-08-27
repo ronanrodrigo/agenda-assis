@@ -1,0 +1,32 @@
+{
+  "extends": "next/core-web-vitals",
+  "rules": {
+    "@next/next/no-img-element": "off"
+  },
+  "overrides": [
+    {
+      "files": ["src/domain/**/*.ts"],
+      "rules": {
+        "no-restricted-imports": ["error", {
+          "patterns": ["next", "next/*", "react", "react-dom", "@/*/infrastructure/*", "@/*/app/*"]
+        }]
+      }
+    },
+    {
+      "files": ["src/application/**/*.ts"],
+      "rules": {
+        "no-restricted-imports": ["error", {
+          "patterns": ["next", "next/*", "react", "react-dom", "@/*/infrastructure/*", "@/*/app/*"]
+        }]
+      }
+    },
+    {
+      "files": ["src/infrastructure/sample/**/*.ts"],
+      "rules": {
+        "no-restricted-imports": ["error", {
+          "patterns": ["next", "next/*", "react", "react-dom", "@/*/infrastructure/google/*"]
+        }]
+      }
+    }
+  ]
+}

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="refresh" content="300">
+  <title>Agenda Campanha — Protótipo</title>
+  <style>
+    :root{
+      --ink:#2b2118; --ink-soft:#4a3f33; --muted:#8a7b6b; --line:#e7ded1;
+      --bg:#f7f3ec; --card:#fffdf9; --band:#efe7da;
+      --gold:#b8912e; --accent:#8c2f2c;
+      --radius:12px;
+      --font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+      --fs-2xs:11px; --fs-xs:12px; --fs-sm:13px; --fs-base:14px; --fs-md:15px; --fs-lg:18px; --fs-xl:22px;
+      --w-normal:400; --w-semibold:600; --w-bold:700; --w-black:800;
+    }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    html,body{height:100%;}
+    body{
+      font-family:var(--font); background:var(--bg); color:var(--ink);
+      font-size:var(--fs-base); line-height:1.4;
+      display:flex; flex-direction:column; height:100vh; overflow:hidden;
+    }
+    .hero{
+      background:var(--accent); color:#f7f3ec;
+      display:flex; align-items:center; gap:16px;
+      padding:14px 24px; box-shadow:0 2px 10px rgba(43,33,24,.12); flex:0 0 auto;
+    }
+    .hero-qr{background:#fff;padding:6px;border-radius:10px;display:flex;align-items:center;}
+    .hero-qr img{width:64px;height:64px;display:block;}
+    .hero-text h1{font-size:var(--fs-xl);font-weight:var(--w-bold);line-height:1.15;}
+    .hero-text p{font-size:var(--fs-base);font-weight:var(--w-normal);opacity:.82;margin-top:2px;}
+    .hero-star{margin-left:auto;font-size:var(--fs-lg);color:var(--gold);text-shadow:0 1px 3px rgba(0,0,0,.25);}
+
+    .today{
+      flex:0 0 auto; background:var(--band); border-bottom:2px solid var(--ink);
+      padding:10px 20px 14px; display:flex; flex-direction:column; min-height:0;
+    }
+    .region-label{
+      display:flex; align-items:center; gap:8px; color:var(--ink);
+      font-size:var(--fs-sm); font-weight:var(--w-bold); text-transform:uppercase; letter-spacing:.04em; margin-bottom:6px; flex:0 0 auto;
+    }
+    .today .scroll{display:flex; gap:14px; overflow-x:auto; overflow-y:hidden; align-items:flex-start;}
+    .period{flex:1; min-width:150px; display:flex; flex-direction:column; gap:4px; margin-right:14px;}
+    .period:last-child{margin-right:0;}
+    .period .ph{font-size:var(--fs-2xs);font-weight:var(--w-bold);text-transform:uppercase;color:var(--ink-soft);letter-spacing:.05em;}
+    .appt{
+      background:var(--card); border-radius:8px; padding:5px 9px; border:1px solid var(--line);
+      font-size:var(--fs-sm); line-height:1.3;
+    }
+    .appt .time{font-weight:var(--w-black);color:var(--ink);margin-right:6px;}
+    .appt .title{font-weight:var(--w-semibold);}
+    .appt .meta{color:var(--muted);font-size:var(--fs-2xs);}
+    .period .empty{font-size:var(--fs-2xs);color:var(--muted);font-style:italic;}
+
+    .columns{flex:1 1 auto; display:flex; min-height:0;}
+    .col{flex:1; padding:12px 18px; overflow-y:auto; display:flex; flex-direction:column; gap:14px;}
+    .col.left{border-right:1px solid var(--line);}
+    .day-group{display:flex; flex-direction:column; margin-bottom:18px;}
+    .day-card{
+      background:var(--card); border-radius:var(--radius); border:1px solid var(--line);
+      overflow:hidden;
+    }
+    .day-head{
+      display:flex; align-items:baseline; gap:8px; color:var(--ink);
+      font-size:var(--fs-sm); font-weight:var(--w-bold); text-transform:uppercase; letter-spacing:.03em;
+      padding:10px 14px; border-bottom:1px solid var(--line);
+    }
+    .day-head .dnum{font-size:var(--fs-lg);font-weight:var(--w-black);}
+    .day-head .dweek{font-size:var(--fs-xs);color:var(--muted);font-weight:var(--w-semibold);text-transform:none;}
+    .day-list{list-style:none; margin:0; padding:0;}
+    .day-list li{
+      display:flex; gap:12px; align-items:baseline;
+      padding:8px 14px; border-bottom:1px solid var(--line);
+    }
+    .day-list li:last-child{border-bottom:none;}
+    .day-list .time{min-width:54px;font-weight:var(--w-black);color:var(--ink);font-size:var(--fs-base);flex:0 0 auto;}
+    .day-list .ev-body{flex:1;min-width:0;}
+    .day-list .ev-title{font-size:var(--fs-md);font-weight:var(--w-semibold);}
+    .day-list .ev-loc{font-size:var(--fs-xs);color:var(--ink-soft);margin-top:1px;}
+
+    .open-btn{
+      display:none; position:fixed; bottom:16px; left:16px; right:16px;
+      background:var(--ink); color:#f7f3ec;
+      text-align:center; padding:15px; border-radius:24px; font-weight:var(--w-normal); text-decoration:none;
+      box-shadow:0 2px 8px rgba(43,33,24,.2); font-size:var(--fs-md);
+    }
+
+    @media (max-width:768px){
+      .today{display:none;}
+      .columns{flex-direction:column;}
+      .col.right{display:none;}
+      .col.left{border-right:none;}
+      .open-btn{display:block;}
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-qr"><img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://ronanrodrigo.dev/agenda-assis" alt="QR Code"></div>
+    <div class="hero-text">
+      <h1>Acompanhe aqui a agenda da campanha!</h1>
+      <p>Escaneie o QR code para abrir no navegador</p>
+    </div>
+    <span class="hero-star">★</span>
+  </header>
+
+  <section class="today">
+    <div class="region-label" id="today-label">Hoje</div>
+    <div class="scroll" id="today-list"></div>
+  </section>
+
+  <main class="columns">
+    <div class="col left">
+      <div class="region-label">Agosto 2026</div>
+      <div id="current-month"></div>
+    </div>
+    <div class="col right">
+      <div class="region-label">Setembro 2026</div>
+      <div id="next-month"></div>
+    </div>
+  </main>
+
+  <a class="open-btn" href="https://calendar.google.com/calendar/u/0/r/agenda/assis.capim@gmail.com">🗓️ Abrir no Google Agenda</a>
+
+  <script>
+    const WEEK=['dom','seg','ter','qua','qui','sex','sáb'];
+    const WEEK_FULL=['Domingo','Segunda Feira','Terça Feira','Quarta Feira','Quinta Feira','Sexta Feira','Sábado'];
+    const MONTHS=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+    const MONTHS_FULL=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+    const hoje = new Date();
+    const diaAtual = hoje.getDate();
+    const mesAtual = MONTHS[hoje.getMonth()];
+    const anoAtual = hoje.getFullYear();
+    const data={
+      today:[
+        {time:'16:00',title:'Reunião na APAE Barra Velha com Celeste',meta:'Barra Velha'},
+        {time:'19:00',title:'Reunião em Guaramirim casa do Sérgio',meta:'Guaramirim'},
+        {time:'20:00',title:'De 17 a 30 Vivenito - Edmundo Doubrawa',meta:'Joinville'}
+      ],
+      currentMonth:[
+        {day:27,mon:'ago',time:'16:00',title:'Reunião na APAE Barra Velha com Celeste',loc:'Barra Velha'},
+        {day:27,mon:'ago',time:'19:00',title:'Reunião em Guaramirim casa do Sérgio',loc:'Guaramirim'},
+        {day:28,mon:'ago',time:'08:00',title:'Desfile em Guaramirim',loc:''},
+        {day:28,mon:'ago',time:'15:00',title:'Reunião com Estela Maris . Prima Djonatha',loc:''},
+        {day:29,mon:'ago',time:'10:00',title:'Bandeiraço na rotatória do restaurante glória',loc:''},
+        {day:29,mon:'ago',time:'11:00',title:'Encontro PSB Jarivatuba',loc:'R. Perpétua Borges Cunha, 493'},
+        {day:29,mon:'ago',time:'17:00',title:'Reunião de mobilização PT Itapema',loc:''}
+      ],
+      nextMonth:[
+        {day:1,mon:'set',time:'08:00',title:'Início panfletagem',loc:''},
+        {day:2,mon:'set',time:'19:30',title:'Reunião Patrícia',loc:''},
+        {day:3,mon:'set',time:'19:30',title:'Reunião com Tarcísio casa Alberto Pessoa',loc:''},
+        {day:4,mon:'set',time:'19:00',title:'Sinjusc',loc:'Av. Mauro Ramos, 448'},
+        {day:5,mon:'set',time:'10:00',title:'CEBI com Jaime Bianchini',loc:''},
+        {day:5,mon:'set',time:'16:00',title:'Evento com nossos apoiadores',loc:''}
+      ]
+    };
+    const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+    // Atualiza label "Hoje · DD MMM"
+    document.getElementById('today-label').textContent = `Hoje · ${diaAtual} ${mesAtual}`;
+
+    // Hoje agrupado por Manhã/Tarde/Noite
+    function periodOf(t){const h=parseInt(t.slice(0,2),10);return h<12?'Manhã':h<18?'Tarde':'Noite';}
+    const periods=['Manhã','Tarde','Noite'];
+    document.getElementById('today-list').innerHTML=periods.map(p=>{
+      const items=data.today.filter(e=>periodOf(e.time)===p);
+      const body=items.length
+        ? items.map(e=>`<div class="appt"><span class="time">${esc(e.time)}</span><span class="title">${esc(e.title)}</span>${e.meta?` <span class="meta">${esc(e.meta)}</span>`:''}</div>`).join('')
+        : `<div class="empty">—</div>`;
+      return `<div class="period"><div class="ph">${p}</div>${body}</div>`;
+    }).join('');
+
+    // Mês agrupado por dia
+    function byDay(list){
+      const m={};
+      list.forEach(e=>{(m[e.day]=m[e.day]||[]).push(e);});
+      return Object.keys(m).map(Number).sort((a,b)=>a-b).map(d=>({day:d,items:m[d]}));
+    }
+    function renderMonth(elId,list,year){
+      document.getElementById(elId).innerHTML=byDay(list).map(g=>{
+        const date=new Date(year, MONTHS.indexOf(g.items[0].mon), g.day);
+        const monthName=MONTHS_FULL[date.getMonth()];
+        const weekdayFull=WEEK_FULL[date.getDay()];
+        const evs=g.items.map(e=>`<li><span class="time">${esc(e.time)}</span><span class="ev-body"><span class="ev-title">${esc(e.title)}</span>${e.loc?`<div class="ev-loc">${esc(e.loc)}</div>`:''}</span></li>`).join('');
+        return `<section class="day-group"><div class="day-card"><div class="day-head"><span class="dnum">${g.day}/${monthName}</span><span class="dweek">- ${weekdayFull}</span></div><ul class="day-list">${evs}</ul></div></section>`;
+      }).join('');
+    }
+    // Filtro dinâmico: apenas eventos do dia seguinte em diante
+    renderMonth('current-month',data.currentMonth.filter(e=>e.day>diaAtual),anoAtual);
+    renderMonth('next-month',data.nextMonth,anoAtual);
+
+    // Auto-refresh a cada 5 minutos (complementar ao meta refresh)
+    setTimeout(()=>location.reload(), 5*60*1000);
+  </script>
+</body>
+</html>
