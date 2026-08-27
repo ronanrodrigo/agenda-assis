@@ -57,7 +57,7 @@
       transform-origin: top left;
     }
 
-    .qr-code-overlay {
+    .qr-header {
       position: fixed;
       bottom: 20px;
       right: 20px;
@@ -67,24 +67,18 @@
       box-shadow: 0 2px 12px rgba(0,0,0,0.25);
       z-index: 1000;
       display: flex;
-      gap: 24px;
-      align-items: flex-end;
-    }
-
-    .qr-item {
-      display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 4px;
+      gap: 6px;
     }
 
-    .qr-item img {
+    .qr-header img {
       width: 80px;
       height: 80px;
       display: block;
     }
 
-    .qr-item span {
+    .qr-header span {
       font-size: 13px;
       color: #333;
       font-weight: 500;
@@ -95,18 +89,17 @@
     .open-calendar-btn {
       display: none;
       position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
+      bottom: 0;
+      left: 0;
+      width: 100%;
       background: #4285f4;
       color: white;
       border: none;
-      border-radius: 24px;
-      padding: 12px 24px;
-      font-size: 14px;
+      padding: 16px;
+      font-size: 16px;
       font-weight: 500;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      text-align: center;
       z-index: 1000;
       cursor: pointer;
       text-decoration: none;
@@ -194,12 +187,12 @@
       document.getElementById('nextMonthFrame').src = url;
     })();
   </script>
+  <div class="qr-header">
+    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://ronanrodrigo.dev/agenda-assis" alt="QR Code - Abrir agenda no celular">
+    <span>Acompanhe aqui a agenda da campanha!</span>
+  </div>
   <a class="open-calendar-btn" href="https://calendar.google.com/calendar/u/0/r/agenda/assis.capim@gmail.com" target="_self">
     📅 Abrir no Google Agenda
   </a>
-  <div class="qr-code-overlay">
-    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://ronanrodrigo.dev/agenda-assis" alt="QR Code - Abrir agenda no celular">
-    <span style="font-size: 11px; color: #333; text-align: center; max-width: 100px; line-height: 1.3;">Acompanhe aqui a agenda da campanha!</span>
-  </div>
 </body>
 </html>
