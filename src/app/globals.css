@@ -27,7 +27,7 @@ body{
 .hero-qr img{width:64px;height:64px;display:block;}
 .hero-text h1{font-size:var(--fs-xl);font-weight:var(--w-bold);line-height:1.15;}
 .hero-text p{font-size:var(--fs-base);font-weight:var(--w-normal);opacity:.82;margin-top:2px;}
-.hero-star{margin-left:auto;font-size:var(--fs-lg);color:var(--gold);text-shadow:0 1px 3px rgba(0,0,0,.25);}
+.hero-star{margin-left:auto;font-size:25px;color:#f2c200;text-shadow:0 1px 3px rgba(0,0,0,.25);}
 
 /* ---- Today (auto height) ---- */
 .today{
