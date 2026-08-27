@@ -116,12 +116,14 @@
     .open-calendar-btn {
       display: none;
       position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
+      bottom: 16px;
+      left: 16px;
+      right: 16px;
+      width: auto;
       background: linear-gradient(135deg, #c62828, #b71c1c);
       color: white;
       border: none;
+      border-radius: 12px;
       padding: 16px;
       font-size: 16px;
       font-weight: 500;
@@ -130,6 +132,7 @@
       z-index: 1000;
       cursor: pointer;
       text-decoration: none;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
     }
 
     .calendar-mobile {
@@ -166,9 +169,6 @@
 
 
   </style>
-  <meta name="theme-color" content="#c62828">
-  <meta name="theme-color" content="#c62828" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#b71c1c" media="(prefers-color-scheme: dark)">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Agenda Campanha">
