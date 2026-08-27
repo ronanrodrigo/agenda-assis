@@ -51,7 +51,7 @@ function renderDayCard(g: { day: number; items: MonthEvent[] }, year: number) {
       <div className="day-card">
         <div className="day-head">
           <span className="dnum">{g.day}/{monthName}</span>
-          <span className="dweek">- {weekdayFull}</span>
+          <span className="dweek">{weekdayFull}</span>
         </div>
         <ul className="day-list">
           {g.items.map((e) => (

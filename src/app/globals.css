@@ -61,7 +61,7 @@ body{
   overflow:hidden;
 }
 .day-head{
-  display:flex; align-items:baseline; gap:8px; color:var(--ink);
+  display:flex; align-items:baseline; justify-content:space-between; color:var(--ink);
   font-size:var(--fs-sm); font-weight:var(--w-bold); text-transform:uppercase; letter-spacing:.03em;
   padding:10px 14px; border-bottom:1px solid var(--line);
 }
