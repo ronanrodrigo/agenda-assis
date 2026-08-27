@@ -1,0 +1,148 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+
+interface Appt { id: string; time: string; title: string; location: string }
+interface MonthEvent { id: string; day: number; mon: string; title: string; time: string; location: string }
+interface AgendaResponse {
+  today: Appt[];
+  currentMonth: MonthEvent[];
+  nextMonth: MonthEvent[];
+}
+
+const MONTHS_FULL = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+const MONTHS_IDX: Record<string, number> = { jan:0,fev:1,mar:2,abr:3,mai:4,jun:5,jul:6,ago:7,set:8,out:9,nov:10,dez:11 };
+const WEEK = ['dom','seg','ter','qua','qui','sex','sáb'];
+const PERIODS = ['Manhã','Tarde','Noite'] as const;
+type Period = typeof PERIODS[number];
+
+function periodOf(time: string): Period {
+  const h = parseInt(time.slice(0, 2), 10);
+  if (Number.isNaN(h)) return 'Manhã';
+  return h < 12 ? 'Manhã' : h < 18 ? 'Tarde' : 'Noite';
+}
+
+function nowLabels() {
+  const d = new Date();
+  return {
+    todayLabel: `Hoje · ${d.getDate()} ${MONTHS_FULL[d.getMonth()].slice(0, 3)}`,
+    curLabel: `${MONTHS_FULL[d.getMonth()]} ${d.getFullYear()}`,
+    next: new Date(d.getFullYear(), d.getMonth() + 1, 1),
+  };
+}
+
+function byDay(list: MonthEvent[]) {
+  const map = new Map<number, MonthEvent[]>();
+  for (const e of list) {
+    const arr = map.get(e.day) ?? [];
+    arr.push(e);
+    map.set(e.day, arr);
+  }
+  return [...map.entries()].sort((a, b) => a[0] - b[0]).map(([day, items]) => ({ day, items }));
+}
+
+function renderDayCard(g: { day: number; items: MonthEvent[] }, year: number) {
+  const d = new Date(year, MONTHS_IDX[g.items[0].mon], g.day);
+  const weekday = WEEK[d.getDay()];
+  const monthNum = MONTHS_IDX[g.items[0].mon] + 1;
+  return (
+    <section className="day-group" key={g.day}>
+      <div className="day-card">
+        <div className="day-head">
+          <span className="dnum">Dia {g.day}</span>
+          <span className="dweek">{weekday} {g.day}/{monthNum}</span>
+        </div>
+        <ul className="day-list">
+          {g.items.map((e) => (
+            <li key={e.id}>
+              <span className="time">{e.time}</span>
+              <span className="ev-body">
+                <span className="ev-title">{e.title}</span>
+                {e.location && <div className="ev-loc">{e.location}</div>}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  );
+}
+
+export default function Page() {
+  const [data, setData] = useState<AgendaResponse | null>(null);
+  const [err, setErr] = useState<string | null>(null);
+  const labels = nowLabels();
+  const nextLabel = `${MONTHS_FULL[labels.next.getMonth()]} ${labels.next.getFullYear()}`;
+
+  useEffect(() => {
+    let alive = true;
+    async function load() {
+      try {
+        const res = await fetch('/api/calendar');
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const json = (await res.json()) as AgendaResponse;
+        if (alive) setData(json);
+      } catch (e) {
+        if (alive) setErr(String(e));
+      }
+    }
+    load();
+    const t = setInterval(load, 5 * 60 * 1000);
+    return () => { alive = false; clearInterval(t); };
+  }, []);
+
+  const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+  return (
+    <>
+      <header className="hero">
+        <div className="hero-qr">
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://ronanrodrigo.dev/agenda-assis" alt="QR Code" />
+        </div>
+        <div className="hero-text">
+          <h1>Acompanhe aqui a agenda da campanha!</h1>
+          <p>Escaneie o QR code para abrir no navegador</p>
+        </div>
+        <span className="hero-star">★</span>
+      </header>
+
+      <section className="today">
+        <div className="region-label">{labels.todayLabel}</div>
+        <div className="scroll">
+          {PERIODS.map((p) => {
+            const items = (data?.today ?? []).filter((e) => periodOf(e.time) === p);
+            return (
+              <div className="period" key={p}>
+                <div className="ph">{p}</div>
+                {items.length === 0
+                  ? <div className="empty">—</div>
+                  : items.map((e) => (
+                      <div className="appt" key={e.id}>
+                        <span className="time">{e.time}</span>
+                        <span className="title">{e.title}</span>
+                        {e.location && <span className="meta">{e.location}</span>}
+                      </div>
+                    ))}
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      <main className="columns">
+        <div className="col left">
+          <div className="region-label">{labels.curLabel}</div>
+          {byDay((data?.currentMonth ?? []).filter((e) => e.day > new Date().getDate())).map((g) => renderDayCard(g, new Date().getFullYear()))}
+        </div>
+        <div className="col right">
+          <div className="region-label">{nextLabel}</div>
+          {byDay(data?.nextMonth ?? []).map((g) => renderDayCard(g, labels.next.getFullYear()))}
+        </div>
+      </main>
+
+      <a className="open-btn" href="https://calendar.google.com/calendar/u/0/r/agenda/assis.capim@gmail.com">🗓️ Abrir no Google Agenda</a>
+
+      {err && <div className="error">Não foi possível carregar a agenda. ({esc(err)})</div>}
+    </>
+  );
+}
