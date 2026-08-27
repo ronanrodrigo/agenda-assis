@@ -57,28 +57,23 @@
       transform-origin: top left;
     }
 
-    .qr-header {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
+    .qr-hero {
       background: white;
-      border-radius: 12px;
-      padding: 12px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.25);
-      z-index: 1000;
+      padding: 16px 24px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
 
-    .qr-header img {
+    .qr-hero img {
       width: 80px;
       height: 80px;
       display: block;
     }
 
-    .qr-header span {
+    .qr-hero span {
       font-size: 14px;
       color: #333;
       font-weight: 500;
@@ -120,7 +115,7 @@
         transform: none;
       }
 
-      .qr-code-overlay {
+      .qr-hero {
         display: none;
       }
 
@@ -187,7 +182,7 @@
       document.getElementById('nextMonthFrame').src = url;
     })();
   </script>
-  <div class="qr-header">
+  <div class="qr-hero">
     <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://ronanrodrigo.dev/agenda-assis" alt="QR Code - Abrir agenda no celular">
     <span>Acompanhe aqui a agenda da campanha!</span>
   </div>
