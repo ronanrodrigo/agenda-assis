@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agenda - Google Calendar</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: #4285f4;
+    }
+
+    .calendar-container {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      width: 100vw;
+    }
+
+    .calendar-header {
+      background: #3b78e7;
+      color: #fff;
+      padding: 0.75rem 1.5rem;
+      font-size: 1.25rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-shrink: 0;
+    }
+
+    .calendar-header svg {
+      width: 24px;
+      height: 24px;
+      fill: currentColor;
+    }
+
+    .calendar-iframe-wrapper {
+      flex: 1;
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .calendar-iframe-wrapper iframe {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+
+  </style>
+</head>
+<body>
+  <div class="calendar-container">
+    <div class="calendar-header">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zM5 8V6h14v2H5zm2 4h5v5H7v-5z"/>
+      </svg>
+      Agenda
+    </div>
+    <div class="calendar-iframe-wrapper">
+      <iframe
+        src="https://calendar.google.com/calendar/embed?src=assis.capim%40gmail.com&ctz=America%2FSao_Paulo&showTitle=0&showNav=0&showPrint=0&showTabs=0&showCalendars=0"
+        scrolling="no"
+      ></iframe>    </div>
+  </div>
+</body>
+</html>
