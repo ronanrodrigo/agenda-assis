@@ -80,6 +80,7 @@ body{
   display:flex; align-items:center; gap:var(--s-2);
 }
 .period .ph::before{content:none;}
+.ph-icon{flex:0 0 auto; color:var(--ink-soft);}
 .appt{
   background:var(--card); border-radius:var(--radius-sm);
   padding:var(--s-2) var(--s-3); border:1px solid var(--line);

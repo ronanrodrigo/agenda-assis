@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { Sunrise, Sun, Moon } from 'lucide-react';
 
 interface Appt { id: string; time: string; title: string; location: string }
 interface MonthEvent { id: string; day: number; mon: string; title: string; time: string; location: string }
@@ -18,11 +19,11 @@ const WEEK = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb'];
 const WEEK_FULL = ['Domingo', 'Segunda Feira', 'Terça Feira', 'Quarta Feira', 'Quinta Feira', 'Sexta Feira', 'Sábado'];
 const PERIODS = ['Manhã', 'Tarde', 'Noite'] as const;
 type Period = typeof PERIODS[number];
-/** Period display labels with emoji markers. Logic keys stay emoji-free (periodOf match). */
-const PERIOD_LABEL: Record<Period, string> = {
-  'Manhã': '🌅 Manhã',
-  'Tarde': '☀️ Tarde',
-  'Noite': '🌙 Noite',
+/** Period icons (free, lightweight SVG). Logic keys stay emoji-free (periodOf match). */
+const PERIOD_ICON: Record<Period, typeof Sunrise> = {
+  'Manhã': Sunrise,
+  'Tarde': Sun,
+  'Noite': Moon,
 };
 
 function periodOf(time: string): Period {
@@ -129,7 +130,15 @@ export default function Page() {
             const items = (data?.today ?? []).filter((e) => periodOf(e.time) === p);
             return (
               <div className="period" key={p}>
-                <div className="ph">{PERIOD_LABEL[p]}</div>
+                {(() => {
+                  const Icon = PERIOD_ICON[p];
+                  return (
+                    <div className="ph">
+                      <Icon className="ph-icon" size={16} strokeWidth={2.25} aria-hidden />
+                      <span>{p}</span>
+                    </div>
+                  );
+                })()}
                 {items.length === 0
                   ? <div className="empty">—</div>
                   : items.map((e) => (
