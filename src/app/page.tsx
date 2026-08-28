@@ -18,6 +18,12 @@ const WEEK = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb'];
 const WEEK_FULL = ['Domingo', 'Segunda Feira', 'Terça Feira', 'Quarta Feira', 'Quinta Feira', 'Sexta Feira', 'Sábado'];
 const PERIODS = ['Manhã', 'Tarde', 'Noite'] as const;
 type Period = typeof PERIODS[number];
+/** Period display labels with emoji markers. Logic keys stay emoji-free (periodOf match). */
+const PERIOD_LABEL: Record<Period, string> = {
+  'Manhã': '🌅 Manhã',
+  'Tarde': '☀️ Tarde',
+  'Noite': '🌙 Noite',
+};
 
 function periodOf(time: string): Period {
   const h = parseInt(time.slice(0, 2), 10);
@@ -123,7 +129,7 @@ export default function Page() {
             const items = (data?.today ?? []).filter((e) => periodOf(e.time) === p);
             return (
               <div className="period" key={p}>
-                <div className="ph">{p}</div>
+                <div className="ph">{PERIOD_LABEL[p]}</div>
                 {items.length === 0
                   ? <div className="empty">—</div>
                   : items.map((e) => (
