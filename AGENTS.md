@@ -22,6 +22,7 @@ Custom campaign-agenda kiosk. A **Next.js (App Router)** app that reads a **publ
 - **`kiosk.sh`** — Linux fullscreen launcher. **Not runnable on macOS** (uses `xset`, `unclutter`, `xdotool`, `chromium-browser`). Only relevant to the physical kiosk box.
 - **`.freebuff/`** — gitignored tool state. Never commit it.
 - **`.hermes/plans/`** — implementation plans. **`.hermes/plans/STATUS.md`** tracks each plan's status (✅ done / 🟡 partial / ⬜ pending / ❌ obsoleto) with commit/PR/deploy evidence. **Check it before starting or claiming any planned work** — it is the source of truth for what's already built vs. pending.
+- **`.hermes/LESSONS.md`** — learned lessons / footguns already hit in this repo (e.g. the America/Sao_Paulo timezone bug). **Read it before touching date/time logic, the calendar fetch, or deploy.**
 
 ## Architecture (skillfold)
 
@@ -49,6 +50,7 @@ infrastructure -----------------------> application (gateway implementations)
 - **`.env.local` is gitignored** (holds the real key). `.env.example` is the template. Never commit `.env.local`.
 - **Vercel Deployment Protection was disabled** on this project (public kiosk). If you re-enable it, the live API/page will 403 for unauthenticated visitors.
 - **`/api/calendar` caches** server-side via the adapter's `maxDuration` window; the page also refreshes every 5 min client-side.
+- **Timezone is `America/Sao_Paulo` — never rely on the runtime (UTC) clock.** All "today" / day-bucketing / time formatting must go through the `sp*` helpers in `event.ts` and the API must be called with `timeZone=America/Sao_Paulo`. Using `new Date().getDate()`/`getMonth()`/`toLocaleTimeString()` (runtime-local) silently shifts "Hoje" to the wrong civil day and times ~3h off on Vercel. **Details + how to avoid: `.hermes/LESSONS.md`.**
 
 ## Verification
 
@@ -58,7 +60,7 @@ npm run verify:pr   # lint (incl. skillfold layer guard) + typecheck + vitest
 npm run dev         # local dev (needs .env.local with GOOGLE_CALENDAR_API_KEY + GOOGLE_CALENDAR_ID)
 ```
 
-- Tests: `vitest` (domain + service; 7 tests). Adapter is covered indirectly; in-memory adapter used in unit tests (no network).
+- Tests: `vitest` (domain + service; 14 tests). Adapter is covered indirectly; in-memory adapter used in unit tests (no network).
 - Typecheck: `tsc --noEmit` (strict).
 - Layer guard: ESLint `no-restricted-imports` prevents `domain`/`application` from importing infra/provider code.
 
