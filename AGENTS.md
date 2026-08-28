@@ -18,7 +18,7 @@ Custom campaign-agenda kiosk. A **Next.js (App Router)** app that reads a **publ
   - `src/infrastructure/sample/in-memory-calendar-gateway.ts` — deterministic adapter for tests.
   - `src/interface-adapters/http/calendar-response.ts` — `AgendaResponse` contract (`today`, `currentMonth`, `nextMonth`).
 - **`agenda-prototype.html`** — standalone static prototype (self-contained fixtures) used to iterate on the visual design before touching the Next.js app. Open in the preview pane to react to changes; port approved changes into `page.tsx`/`globals.css`.
-- **`index.html`** — legacy redirector served by **GitHub Pages** at `ronanrodrigo.dev/agenda-assis`. It only redirects to the live Vercel site (`https://agenda-assis.vercel.app`). Do not put app logic here.
+- **`index.html`** — legacy redirector served by **GitHub Pages** at `ronanrodrigo.dev/agenda-assis`. It only redirects to the live site (`https://assis.ronanrodrigo.dev`). Do not put app logic here. The canonical project now lives in the private repo `assis`; this public repo stays only as the GitHub Pages redirector.
 - **`kiosk.sh`** — Linux fullscreen launcher. **Not runnable on macOS** (uses `xset`, `unclutter`, `xdotool`, `chromium-browser`). Only relevant to the physical kiosk box.
 - **`.freebuff/`** — gitignored tool state. Never commit it.
 - **`.hermes/plans/`** — implementation plans. **`.hermes/plans/STATUS.md`** tracks each plan's status (✅ done / 🟡 partial / ⬜ pending / ❌ obsoleto) with commit/PR/deploy evidence. **Check it before starting or claiming any planned work** — it is the source of truth for what's already built vs. pending.
@@ -102,10 +102,10 @@ npm run dev         # local dev (needs .env.local with GOOGLE_CALENDAR_API_KEY +
 
 ## Deploy
 
-- **Vercel** is the real host (`agenda-assis.vercel.app`, project `rohones/agenda-assis`).
+- **Vercel** is the real host (project `rohones/agenda-assis`), now served under the canonical domain `https://assis.ronanrodrigo.dev`.
   - Env vars (Secret): `GOOGLE_CALENDAR_API_KEY`, `GOOGLE_CALENDAR_ID`.
   - `vercel deploy` → preview; `vercel deploy --prod` → production. Pushing `main` also triggers a production build.
-- **GitHub Pages** serves only `index.html` (redirect to Vercel) at `ronanrodrigo.dev/agenda-assis`. Keep the redirect pointing at the stable `https://agenda-assis.vercel.app` (not a per-deploy hash URL).
+- **GitHub Pages** serves only `index.html` (redirect to the canonical site) at `ronanrodrigo.dev/agenda-assis`. Keep the redirect pointing at the canonical domain `https://assis.ronanrodrigo.dev` (not the per-deploy hash URL, nor the old `agenda-assis.vercel.app`).
 
 ## Style conventions
 
