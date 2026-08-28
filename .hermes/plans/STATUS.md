@@ -28,6 +28,17 @@ Servir o app real no GitHub Pages como estático puro (sem Vercel, fetch client-
 - **Por quê:** em 2026-08-27 decidimos **manter o Vercel** como host real e o GitHub Pages apenas como *redirector* (`index.html` → `agenda-assis.vercel.app`). O plano propunha eliminar o Vercel e expor a API key no cliente, o que não foi adotado.
 - **Estado atual:** `index.html` continua sendo redirector (commit `980cb33` aponta para URL estável `agenda-assis.vercel.app`). Arquitetura Next.js + Vercel segue ativa.
 
+## 🟡 2026-08-27_234500-agenda-assis-static-github-pages  (REESCRITO 2026-08-28)
+Split: repo público agenda-assis = redirect-only p/ assis.ronanrodrigo.dev; repo privado assis = app + Vercel próprio. Vercel agenda-assis intacto.
+- **Status:** DONE
+- **Evidência:**
+  - Repo privado `ronanrodrigo/assis` criado (`isPrivate: true`); app completo espelhado do `agenda-assis` via rsync (sem `.git`/`.env.local`/build).
+  - Projeto Vercel `assis` (team `rohones`): env vars `GOOGLE_CALENDAR_API_KEY` (prod+preview+dev) e `GOOGLE_CALENDAR_ID` set; Deployment Protection desabilitado; domínio `assis.ronanrodrigo.dev` added + `verified: true`.
+  - CNAME `assis` → `5dbd3465f5aaf595.vercel-dns-017.com` no Squarespace (DNS propagado: `dig CNAME assis.ronanrodrigo.dev` confirma).
+  - Commit `c0492aa` no `assis` (push → 2 deployments READY: `assis-ji1vhia36-rohones.vercel.app`, `assis-o6uvsda3b-rohones.vercel.app`).
+  - `assis.ronanrodrigo.dev` → HTTP 200 + agenda real; CORS Google Calendar libera a origem; `agenda-assis.vercel.app` segue 200 (intacto).
+  - Repo público `agenda-assis`: commit `1c8be48` (index.html redirect → assis.ronanrodrigo.dev + AGENTS.md); segue público; GH Pages reconstruindo. App `src/`+`package.json` preservados.
+
 ---
 
 ## ✅ 2026-08-28_003000-fix-tz-sao-paulo-today
