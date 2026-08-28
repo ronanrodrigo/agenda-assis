@@ -113,14 +113,17 @@ export default function Page() {
   return (
     <>
       <header className="hero">
+        <div className="hero-inner">
+          <span className="hero-star">★</span>
+          <div className="hero-text">
+            <h1>Acompanhe nossa agenda</h1>
+          </div>
+        </div>
         <div className="hero-qr">
-          <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://ronanrodrigo.dev/agenda-assis" alt="QR Code" />
+          <div className="qr-card">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://ronanrodrigo.dev/agenda-assis" alt="QR Code" />
+          </div>
         </div>
-        <div className="hero-text">
-          <h1>Acompanhe aqui a agenda da campanha!</h1>
-          <p>Escaneie o QR code para abrir no navegador</p>
-        </div>
-        <span className="hero-star">★</span>
       </header>
 
       <section className="today">
