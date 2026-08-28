@@ -30,6 +30,13 @@ Servir o app real no GitHub Pages como estático puro (sem Vercel, fetch client-
 
 ---
 
+## ✅ 2026-08-28_003000-fix-tz-sao-paulo-today
+Bug: seção "HOJE" mostrava dia errado e horários deslocados (~3h) por causa do timezone (servidor em UTC, calendário em America/Sao_Paulo).
+- **Status:** DONE
+- **Causa:** `getDate`/`getMonth`/`toLocaleTimeString` e o fetch usavam UTC do Vercel; "Hoje" caía em 28/ago e os horários vinham adiantados.
+- **Correção:** `event.ts` com `TIMEZONE='America/Sao_Paulo'` + helpers `sp*` (Intl); `calendar-service` usa chaves SP para janela/divisão; gateway com `timeZone=America/Sao_Paulo`; response/`page.tsx` emitem/consomem horários SP e `todayKey` do servidor como fonte única.
+- **Evidência:** branch `fix/tz-sao-paulo-today` → PR #3 (squash merge no `main`). `npm run verify:pr` verde (14 testes). Endpoint live `https://agenda-assis.vercel.app/api/calendar` retorna `timezone=America/Sao_Paulo`, `todayKey=2026-08-27` com os eventos reais do dia (Gravar programa 08:30, Saída Itajaí 12:00, Sindicato 14:00, APAE 16:00, Guaramirim 19:00) — bate com o calendário.
+
 ### Última atualização
-2026-08-27 — após mencionar STATUS.md no AGENTS.md.
+2026-08-28 — correção de timezone (HOJE em America/Sao_Paulo) mergeada e no ar.
 Próximo plano em aberto: **analytics/observabilidade Vercel** (pending).
