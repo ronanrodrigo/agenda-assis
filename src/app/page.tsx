@@ -5,16 +5,18 @@ import { useEffect, useState } from 'react';
 interface Appt { id: string; time: string; title: string; location: string }
 interface MonthEvent { id: string; day: number; mon: string; title: string; time: string; location: string }
 interface AgendaResponse {
+  timezone: string;
+  todayKey: string; // YYYY-MM-DD in America/Sao_Paulo — source of truth for "today"
   today: Appt[];
   currentMonth: MonthEvent[];
   nextMonth: MonthEvent[];
 }
 
-const MONTHS_FULL = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-const MONTHS_IDX: Record<string, number> = { jan:0,fev:1,mar:2,abr:3,mai:4,jun:5,jul:6,ago:7,set:8,out:9,nov:10,dez:11 };
-const WEEK = ['dom','seg','ter','qua','qui','sex','sáb'];
-const WEEK_FULL = ['Domingo','Segunda Feira','Terça Feira','Quarta Feira','Quinta Feira','Sexta Feira','Sábado'];
-const PERIODS = ['Manhã','Tarde','Noite'] as const;
+const MONTHS_FULL = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+const MONTHS_IDX: Record<string, number> = { jan: 0, fev: 1, mar: 2, abr: 3, mai: 4, jun: 5, jul: 6, ago: 7, set: 8, out: 9, nov: 10, dez: 11 };
+const WEEK = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb'];
+const WEEK_FULL = ['Domingo', 'Segunda Feira', 'Terça Feira', 'Quarta Feira', 'Quinta Feira', 'Sexta Feira', 'Sábado'];
+const PERIODS = ['Manhã', 'Tarde', 'Noite'] as const;
 type Period = typeof PERIODS[number];
 
 function periodOf(time: string): Period {
@@ -23,13 +25,10 @@ function periodOf(time: string): Period {
   return h < 12 ? 'Manhã' : h < 18 ? 'Tarde' : 'Noite';
 }
 
-function nowLabels() {
-  const d = new Date();
-  return {
-    todayLabel: `Hoje · ${d.getDate()} ${MONTHS_FULL[d.getMonth()].slice(0, 3)}`,
-    curLabel: `${MONTHS_FULL[d.getMonth()]} ${d.getFullYear()}`,
-    next: new Date(d.getFullYear(), d.getMonth() + 1, 1),
-  };
+/** Build a local Date pinned to a YYYY-MM-DD (civil date, no TZ drift). */
+function dateFromKey(key: string): Date {
+  const [y, m, d] = key.split('-').map(Number);
+  return new Date(y, m - 1, d);
 }
 
 function byDay(list: MonthEvent[]) {
@@ -72,8 +71,18 @@ function renderDayCard(g: { day: number; items: MonthEvent[] }, year: number) {
 export default function Page() {
   const [data, setData] = useState<AgendaResponse | null>(null);
   const [err, setErr] = useState<string | null>(null);
-  const labels = nowLabels();
-  const nextLabel = `${MONTHS_FULL[labels.next.getMonth()]} ${labels.next.getFullYear()}`;
+
+  // "today" comes from the server (America/Sao_Paulo) — NOT the client's clock.
+  const nowKey = data?.todayKey || '';
+  const nowDate = nowKey ? dateFromKey(nowKey) : new Date();
+  const curY = nowDate.getFullYear();
+  const curM = nowDate.getMonth();
+  const curD = nowDate.getDate();
+  const nextY = curM === 11 ? curY + 1 : curY;
+
+  const todayLabel = `Hoje · ${curD} ${MONTHS_FULL[curM].slice(0, 3)}`;
+  const curLabel = `${MONTHS_FULL[curM]} ${curY}`;
+  const nextLabel = `${MONTHS_FULL[(curM + 1) % 12]} ${nextY}`;
 
   useEffect(() => {
     let alive = true;
@@ -108,7 +117,7 @@ export default function Page() {
       </header>
 
       <section className="today">
-        <div className="region-label">{labels.todayLabel}</div>
+        <div className="region-label">{todayLabel}</div>
         <div className="scroll">
           {PERIODS.map((p) => {
             const items = (data?.today ?? []).filter((e) => periodOf(e.time) === p);
@@ -132,12 +141,12 @@ export default function Page() {
 
       <main className="columns">
         <div className="col left">
-          <div className="region-label">{labels.curLabel}</div>
-          {byDay((data?.currentMonth ?? []).filter((e) => e.day > new Date().getDate())).map((g) => renderDayCard(g, new Date().getFullYear()))}
+          <div className="region-label">{curLabel}</div>
+          {byDay((data?.currentMonth ?? []).filter((e) => e.day > curD)).map((g) => renderDayCard(g, curY))}
         </div>
         <div className="col right">
           <div className="region-label">{nextLabel}</div>
-          {byDay(data?.nextMonth ?? []).map((g) => renderDayCard(g, labels.next.getFullYear()))}
+          {byDay(data?.nextMonth ?? []).map((g) => renderDayCard(g, nextY))}
         </div>
       </main>
 

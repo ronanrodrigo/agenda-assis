@@ -67,3 +67,19 @@ test('handles December -> January year rollover', async () => {
   assert.equal(view.nextMonth.length, 1);
   assert.equal(view.currentMonth.length, 0);
 });
+
+test('"today" is resolved in America/Sao_Paulo, not the runtime zone', async () => {
+  // Instant = 2026-08-28 02:00 UTC, which is still 2026-08-27 23:00 in São Paulo.
+  const now = new Date('2026-08-28T02:00:00Z');
+  const items = [
+    ev({ start: '2026-08-27T16:00:00-03:00', end: '2026-08-27T17:00:00-03:00', title: 'Hoje A' }),
+    ev({ start: '2026-08-28T08:00:00-03:00', end: '2026-08-28T09:00:00-03:00', title: 'Dia 28' }),
+  ];
+  const view = await new BuildAgendaService(fixedGateway(items)).execute(now);
+  // The 27th must be "today" even though the runtime clock reads the 28th (UTC).
+  assert.equal(view.today.length, 1);
+  assert.equal(view.today[0].title, 'Hoje A');
+  // The 28th belongs to currentMonth on the 27th's view.
+  assert.equal(view.currentMonth.length, 1);
+  assert.equal(view.currentMonth[0].title, 'Dia 28');
+});

@@ -1,4 +1,5 @@
 import type { CalendarEvent } from '@/domain/calendar/event';
+import { TIMEZONE } from '@/domain/calendar/event';
 import type { CalendarGateway, CalendarRange } from '@/application/gateways/calendar-gateway';
 
 interface GoogleCalendarItem {
@@ -27,7 +28,8 @@ export class GoogleCalendarGateway implements CalendarGateway {
       '/events?key=' + encodeURIComponent(this.apiKey) +
       '&timeMin=' + encodeURIComponent(range.timeMin) +
       '&timeMax=' + encodeURIComponent(range.timeMax) +
-      '&singleEvents=true&orderBy=startTime';
+      '&singleEvents=true&orderBy=startTime' +
+      '&timeZone=' + encodeURIComponent(TIMEZONE);
 
     let res: Response;
     try {
