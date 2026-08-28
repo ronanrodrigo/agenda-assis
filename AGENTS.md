@@ -26,13 +26,49 @@ Custom campaign-agenda kiosk. A **Next.js (App Router)** app that reads a **publ
 
 ## Architecture (skillfold)
 
-Dependency direction points inward:
+Dependency direction points inward — `domain` depends on nothing; outer layers may import inner ones, never the reverse.
 
-```
-app/transport -> interface-adapters -> application -> domain
-infrastructure -----------------------> application (gateway implementations)
+```mermaid
+flowchart TD
+    subgraph app["app/transport"]
+        page["page.tsx<br/>(kiosk UI)"]
+        route["api/calendar/route.ts<br/>(serverless proxy)"]
+    end
+    subgraph iface["interface-adapters"]
+        resp["http/calendar-response.ts<br/>(AgendaResponse)"]
+    end
+    subgraph app_layer["application"]
+        svc["services/calendar-service.ts<br/>(BuildAgendaService)"]
+        gw["gateways/calendar-gateway.ts<br/>(CalendarGateway port)"]
+        ioc["app-container.ts<br/>(composition root)"]
+    end
+    subgraph domain["domain"]
+        event["calendar/event.ts<br/>(types + sp* TZ helpers)"]
+    end
+    subgraph infra["infrastructure"]
+        gcal["google/google-calendar-gateway.ts<br/>(fetch + API key)"]
+        mem["sample/in-memory-calendar-gateway.ts<br/>(tests)"]
+    end
+
+    page -->|fetch /api/calendar| route
+    route --> resp
+    route --> svc
+    svc --> gw
+    svc --> event
+    ioc -->|wires| gcal
+    ioc -->|wires| svc
+    gw -.implemented by.-> gcal
+    gw -.implemented by.-> mem
+
+    gcal -->|"Google Calendar API<br/>(timeZone=America/Sao_Paulo)"| cal[("Google Calendar<br/>assis.capim@gmail.com")]
+
+    classDef inward fill:#f4f1ea,stroke:#8c2f2c,color:#2b2118;
+    classDef secret fill:#fff4d6,stroke:#8c2f2c,color:#2b2118;
+    class event,gw,svc,resp,page,route inward;
+    class gcal,cal secret;
 ```
 
+**Rules:**
 - `domain` has no framework/provider/infra imports.
 - `application/gateways` are capability ports (interfaces), named by capability not vendor.
 - `infrastructure/google` is the only place that holds the API key + fetch.
