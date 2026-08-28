@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agenda Campanha — Protótipo Hero</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --ink:#2b2118; --ink-soft:#4a3f33; --muted:#8a7b6b; --line:#e7ded1;
+      --bg:#f7f3ec; --card:#fffdf9; --band:#efe7da;
+      --gold:#f2c200; --accent:#c04a3a;
+      --radius:12px;
+      --gutter:24px; /* recuo esquerdo comum a hero, Hoje, mês */
+      --font-body:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+      --font-display:'Sora','Inter',sans-serif;
+      --fs-2xs:11px; --fs-xs:12px; --fs-sm:13px; --fs-base:14px; --fs-md:15px; --fs-lg:18px; --fs-xl:22px; --fs-3xl:40px;
+      --w-normal:400; --w-semibold:600; --w-bold:700; --w-black:800;
+    }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    html,body{height:100%;}
+    body{font-family:var(--font-body);background:var(--bg);color:var(--ink);font-size:var(--fs-base);line-height:1.4;display:flex;flex-direction:column;height:100vh;overflow:hidden;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+
+    /* ===== Hero final ===== */
+    .hero{
+      position:relative; background:var(--accent); color:#f7f3ec;
+      display:flex; align-items:center; gap:28px;
+      padding:34px var(--gutter); flex:0 0 auto; min-height:112px;
+      box-shadow:0 6px 24px rgba(43,33,24,.16);
+    }
+    .hero::before{content:"";position:absolute;inset:0 0 auto 0;height:1px;background:rgba(255,255,255,.14);}
+    .hero-inner{display:flex; align-items:center; gap:20px;}
+    .hero-star{
+      flex:0 0 auto; font-size:30px; line-height:1; color:var(--gold);
+      filter:drop-shadow(0 1px 3px rgba(0,0,0,.28));
+      transform:translateY(1px);
+    }
+    .hero-text h1{
+      font-family:var(--font-display); font-size:var(--fs-3xl);
+      font-weight:var(--w-black); line-height:1.05; letter-spacing:-.025em;
+      color:#fcf8f1; white-space:nowrap;
+    }
+    .hero-qr{
+      position:absolute; right:56px; top:50%; transform:translateY(-50%);
+      flex:0 0 auto;
+    }
+    .hero-qr .qr-card{
+      background:#fff; padding:8px; border-radius:16px; display:inline-block;
+      box-shadow:0 1px 2px rgba(43,33,24,.06), 0 4px 10px rgba(43,33,24,.08);
+    }
+    .hero-qr img{width:68px; height:68px; display:block; border-radius:8px;}
+
+    .today{flex:0 0 auto;background:var(--band);border-bottom:2px solid var(--ink);padding:10px var(--gutter) 14px;display:flex;flex-direction:column;min-height:0;}
+    .region-label{display:flex;align-items:center;gap:8px;color:var(--ink);font-size:var(--fs-sm);font-weight:var(--w-bold);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px;flex:0 0 auto;}
+    .today .scroll{display:flex;gap:14px;overflow-x:auto;overflow-y:hidden;align-items:flex-start;}
+    .period{flex:1;min-width:150px;display:flex;flex-direction:column;gap:4px;margin-right:14px;}
+    .period:last-child{margin-right:0;}
+    .period .ph{font-size:var(--fs-2xs);font-weight:var(--w-bold);text-transform:uppercase;color:var(--ink-soft);letter-spacing:.05em;}
+    .appt{background:var(--card);border-radius:8px;padding:5px 9px;border:1px solid var(--line);font-size:var(--fs-sm);line-height:1.3;}
+    .appt .time{font-weight:var(--w-black);color:var(--ink);margin-right:6px;}
+    .appt .title{font-weight:var(--w-semibold);}
+    .appt .meta{color:var(--muted);font-size:var(--fs-2xs);}
+    .period .empty{font-size:var(--fs-2xs);color:var(--muted);font-style:italic;}
+    .columns{flex:1 1 auto;display:flex;min-height:0;}
+    .col{flex:1;padding:12px var(--gutter);overflow-y:auto;display:flex;flex-direction:column;gap:14px;}
+    .col.left{border-right:1px solid var(--line);}
+    .day-group{display:flex;flex-direction:column;margin-bottom:18px;}
+    .day-card{background:var(--card);border-radius:var(--radius);border:1px solid var(--line);overflow:hidden;}
+    .day-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;color:var(--ink);font-size:var(--fs-sm);font-weight:var(--w-bold);text-transform:uppercase;letter-spacing:.03em;padding:10px 14px;border-bottom:1px solid var(--line);}
+    .day-head .dnum{font-size:var(--fs-lg);font-weight:var(--w-black);}
+    .day-head .dweek{font-size:var(--fs-lg);font-weight:var(--w-black);color:var(--muted);}
+    .day-list{list-style:none;margin:0;padding:0;}
+    .day-list li{display:flex;gap:12px;align-items:baseline;padding:8px 14px;border-bottom:1px solid var(--line);}
+    .day-list li:last-child{border-bottom:none;}
+    .day-list .time{min-width:54px;font-weight:var(--w-black);color:var(--ink);font-size:var(--fs-base);flex:0 0 auto;}
+    .day-list .ev-body{flex:1;min-width:0;}
+    .day-list .ev-title{font-size:var(--fs-md);font-weight:var(--w-semibold);}
+    .day-list .ev-loc{font-size:var(--fs-xs);color:var(--ink-soft);margin-top:1px;}
+    @media (max-width:768px){.today{display:none;}.columns{flex-direction:column;}.col.right{display:none;}.col.left{border-right:none;}}
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <span class="hero-star">★</span>
+      <div class="hero-text"><h1>Acompanhe nossa agenda</h1></div>
+    </div>
+    <div class="hero-qr">
+      <div class="qr-card"><img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://ronanrodrigo.dev/agenda-assis" alt="QR Code"></div>
+    </div>
+  </header>
+
+  <section class="today"><div class="region-label" id="today-label">Hoje</div><div class="scroll" id="today-list"></div></section>
+  <main class="columns">
+    <div class="col left"><div class="region-label">Agosto 2026</div><div id="current-month"></div></div>
+    <div class="col right"><div class="region-label">Setembro 2026</div><div id="next-month"></div></div>
+  </main>
+
+  <script>
+    const MONTHS=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+    const MONTHS_FULL=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+    const WEEK_LONG=['Domingo','Segunda Feira','Terça Feira','Quarta Feira','Quinta Feira','Sexta Feira','Sábado'];
+    const hoje=new Date(); const diaAtual=hoje.getDate(); const mesAtual=MONTHS[hoje.getMonth()]; const anoAtual=hoje.getFullYear();
+    const data={today:[{time:'16:00',title:'Reunião na APAE Barra Velha com Celeste',meta:'Barra Velha'},{time:'19:00',title:'Reunião em Guaramirim casa do Sérgio',meta:'Guaramirim'},{time:'20:00',title:'De 17 a 30 Vivenito - Edmundo Doubrawa',meta:'Joinville'}],currentMonth:[{day:27,mon:'ago',time:'16:00',title:'Reunião na APAE Barra Velha com Celeste',loc:'Barra Velha'},{day:27,mon:'ago',time:'19:00',title:'Reunião em Guaramirim casa do Sérgio',loc:'Guaramirim'},{day:28,mon:'ago',time:'08:00',title:'Desfile em Guaramirim',loc:''},{day:28,mon:'ago',time:'15:00',title:'Reunião com Estela Maris . Prima Djonatha',loc:''},{day:29,mon:'ago',time:'10:00',title:'Bandeiraço na rotatória do restaurante glória',loc:''},{day:29,mon:'ago',time:'11:00',title:'Encontro PSB Jarivatuba',loc:'R. Perpétua Borges Cunha, 493'},{day:29,mon:'ago',time:'17:00',title:'Reunião de mobilização PT Itapema',loc:''}],nextMonth:[{day:1,mon:'set',time:'08:00',title:'Início panfletagem',loc:''},{day:2,mon:'set',time:'19:30',title:'Reunião Patrícia',loc:''},{day:3,mon:'set',time:'19:30',title:'Reunião com Tarcísio casa Alberto Pessoa',loc:''},{day:4,mon:'set',time:'19:00',title:'Sinjusc',loc:'Av. Mauro Ramos, 448'},{day:5,mon:'set',time:'10:00',title:'CEBI com Jaime Bianchini',loc:''},{day:5,mon:'set',time:'16:00',title:'Evento com nossos apoiadores',loc:''}]};
+    const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    document.getElementById('today-label').textContent=`Hoje · ${diaAtual} ${mesAtual}`;
+    function periodOf(t){const h=parseInt(t.slice(0,2),10);return h<12?'Manhã':h<18?'Tarde':'Noite';}
+    const periods=['Manhã','Tarde','Noite'];
+    document.getElementById('today-list').innerHTML=periods.map(p=>{const items=data.today.filter(e=>periodOf(e.time)===p);const body=items.length?items.map(e=>`<div class="appt"><span class="time">${esc(e.time)}</span><span class="title">${esc(e.title)}</span>${e.meta?` <span class="meta">${esc(e.meta)}</span>`:''}</div>`).join(''):`<div class="empty">—</div>`;return `<div class="period"><div class="ph">${p}</div>${body}</div>`;}).join('');
+    function byDay(list){const m={};list.forEach(e=>{(m[e.day]=m[e.day]||[]).push(e);});return Object.keys(m).map(Number).sort((a,b)=>a-b).map(d=>({day:d,items:m[d]}));}
+    function renderMonth(elId,list,year){document.getElementById(elId).innerHTML=byDay(list).map(g=>{const date=new Date(year,MONTHS.indexOf(g.items[0].mon),g.day);const evs=g.items.map(e=>`<li><span class="time">${esc(e.time)}</span><span class="ev-body"><span class="ev-title">${esc(e.title)}</span>${e.loc?`<div class="ev-loc">${esc(e.loc)}</div>`:''}</span></li>`).join('');return `<section class="day-group"><div class="day-card"><div class="day-head"><span class="dnum">${g.day}/${MONTHS_FULL[date.getMonth()]}</span><span class="dweek">${WEEK_LONG[date.getDay()]}</span></div><ul class="day-list">${evs}</ul></div></section>`;}).join('');}
+    renderMonth('current-month',data.currentMonth.filter(e=>e.day>diaAtual),anoAtual);
+    renderMonth('next-month',data.nextMonth,anoAtual);
+  </script>
+</body>
+</html>
