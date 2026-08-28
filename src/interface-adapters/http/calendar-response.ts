@@ -1,45 +1,58 @@
 import type { AgendaView } from '@/application/services/calendar-service';
+import { spTime, spDateKey, spMonth, spDay, TIMEZONE } from '@/domain/calendar/event';
 
-/** Shape returned by GET /api/calendar (transport contract). */
-export interface AgendaResponse {
-  today: { id: string; time: string; title: string; location: string }[];
-  currentMonth: { id: string; day: number; mon: string; title: string; time: string; location: string }[];
-  nextMonth: { id: string; day: number; mon: string; title: string; time: string; location: string }[];
+const MONTHS = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+
+interface BaseItem {
+  id: string;
+  title: string;
+  location: string;
 }
 
-const MONTHS = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
-
-function fmtTime(iso: string): string {
-  if (!iso) return '';
-  const d = new Date(iso.length <= 10 ? iso + 'T00:00:00' : iso);
-  if (Number.isNaN(d.getTime())) return '';
-  return d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+function fmtTime(e: BaseItem & { start: string; allDay: boolean }): string {
+  return e.allDay ? 'Dia todo' : spTime(e.start);
 }
 
-/** Translate application AgendaView into the wire response. */
+/** Translate application AgendaView into the wire response (times in America/Sao_Paulo). */
 export function toAgendaResponse(view: AgendaView): AgendaResponse {
   return {
+    timezone: TIMEZONE,
+    todayKey: view.today.length
+      ? spDateKey(view.today[0].start)
+      : view.currentMonth.length
+        ? spDateKey(view.currentMonth[0].start)
+        : '',
     today: view.today.map((e) => ({
       id: e.id,
-      time: e.allDay ? 'Dia todo' : fmtTime(e.start),
+      time: fmtTime(e),
       title: e.title,
       location: e.location,
     })),
     currentMonth: view.currentMonth.map((e) => ({
       id: e.id,
-      day: new Date(e.start.length <= 10 ? e.start + 'T00:00:00' : e.start).getDate(),
-      mon: MONTHS[new Date(e.start.length <= 10 ? e.start + 'T00:00:00' : e.start).getMonth()],
+      day: spDay(e.start),
+      mon: MONTHS[spMonth(e.start)],
       title: e.title,
-      time: e.allDay ? 'Dia todo' : fmtTime(e.start),
+      time: fmtTime(e),
       location: e.location,
     })),
     nextMonth: view.nextMonth.map((e) => ({
       id: e.id,
-      day: new Date(e.start.length <= 10 ? e.start + 'T00:00:00' : e.start).getDate(),
-      mon: MONTHS[new Date(e.start.length <= 10 ? e.start + 'T00:00:00' : e.start).getMonth()],
+      day: spDay(e.start),
+      mon: MONTHS[spMonth(e.start)],
       title: e.title,
-      time: e.allDay ? 'Dia todo' : fmtTime(e.start),
+      time: fmtTime(e),
       location: e.location,
     })),
   };
+}
+
+/** Shape returned by GET /api/calendar (transport contract). */
+export interface AgendaResponse {
+  timezone: string;
+  /** today's calendar date (YYYY-MM-DD) in America/Sao_Paulo — single source of truth for the client. */
+  todayKey: string;
+  today: { id: string; time: string; title: string; location: string }[];
+  currentMonth: { id: string; day: number; mon: string; title: string; time: string; location: string }[];
+  nextMonth: { id: string; day: number; mon: string; title: string; time: string; location: string }[];
 }
